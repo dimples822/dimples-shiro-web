@@ -1,11 +1,11 @@
 [
   {
-	"id":0,
+	"id":1,
     "title": "系统首页",
 	"type":"1",
     "icon": "layui-icon layui-icon-home",
     "spread": true,
-    "href": ""
+    "href": "views/console.html"
   },
   {
 	"id":1,
