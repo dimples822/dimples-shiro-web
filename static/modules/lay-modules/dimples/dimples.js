@@ -40,6 +40,10 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
         this.setConfig = function (name, value) {
             config[name] = value;
         };
+        /**
+         *  页面初始化
+         * @param option 参数
+         */
         this.init = function (option) {
             //在所有初始化之前,提前构建主题颜色
             dimples.initBgColor();
@@ -392,9 +396,11 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
         this.tabDelete = function (id) {
             element.tabDelete("mainFrame", id); //删除
         };
+        // tab 标签页的滑动
         this.rollPage = function (d) {
             let $tabTitle = $('.layui-body .layui-tab .layui-tab-title');
             let left = $tabTitle.scrollLeft();
+            console.log("left: " + left);
             if ('left' === d) {
                 $tabTitle.animate({
                     scrollLeft: left - 450
@@ -596,7 +602,6 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
             let loading = layer.load();
             //兼容单标签页
             if (dimples.config("multileTab")) {
-
                 console.log("多标签刷新");
                 $(".dimples-layout .layui-tab-content .layui-show").find("iframe")[0].contentWindow.location.reload(true);
                 layer.close(loading);
@@ -625,9 +630,10 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
         }
     });
 
-
-
-    $(".setTheme").click(function () {
+    /**
+     * 设置主题按钮点击事件
+     */
+    $(".setTheme").on("click", (function () {
         layer.open({
             type: 2,
             title: false,
@@ -650,9 +656,43 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
                 return false;
             }
         });
-    });
+    }));
+
+    /**
+     * 构建背景颜色选择
+     * @returns {string}
+     */
+    this.buildBgColorHtml = function () {
+        let html = '';
+        let bgColorId = sessionStorage.getItem('dimplesBgColorId');
+        if (bgColorId === null || bgColorId === "undefined" || bgColorId === "") {
+            bgColorId = 0;
+        }
+        let bgColorConfig = dimples.bgColorConfig();
+        $.each(bgColorConfig, function (key, val) {
+            if (key === bgColorId) {
+                html += '<li class="layui-this" data-select-bgcolor="' + key + '">\n';
+            } else {
+                html += '<li  data-select-bgcolor="' + key + '">\n';
+            }
+            html += '<a href="javascript:;" data-skin="skin-blue" style="" class="clearfix full-opacity-hover">\n' +
+                '<div><span style="display:block; width: 20%; float: left; height: 12px; background: ' + val.headerLogo +
+                ';"></span><span style="display:block; width: 80%; float: left; height: 12px; background: ' + val.headerRight +
+                ';"></span></div>\n' +
+                '<div><span style="display:block; width: 20%; float: left; height: 40px; background: ' + val.menuLeft +
+                ';"></span><span style="display:block; width: 80%; float: left; height: 40px; background: #f4f5f7;"></span></div>\n' +
+                '</a>\n' +
+                '</li>';
+        });
+        return html;
+    };
+
+    /**
+     * 关键函数
+     * 渲染iframe所用
+     */
     element.on('tab(mainFrame)', function (data) {
-        if (data.elem.context.attributes != undefined) {
+        if (data.elem.context.attributes !== undefined) {
             let id = data.elem.context.attributes[0].nodeValue;
             layui.each($(".layui-side"), function () {
                 $(this).find(".layui-this").removeClass("layui-this");
@@ -661,11 +701,9 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
         }
     });
 
-
-    $(".layui-side").on("click", ".layui-nav-item>a", function () {
-
-        if ($(".zoom-tool").attr("show-data") == 1) {
-
+    let laySide = $(".layui-side");
+    laySide.on("click", ".layui-nav-item>a", function () {
+        if ($(".zoom-tool").attr("show-data") === "1") {
             if (!$(this).attr("lay-id")) {
                 //当前
                 let superEle = $(this).parent();
@@ -696,10 +734,8 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
         }
     });
 
-    $(".layui-side").on("click", ".layui-nav-item dd>.site-demo-active", function () {
-
-        if ($(".zoom-tool").attr("show-data") == 1) {
-
+    laySide.on("click", ".layui-nav-item dd>.site-demo-active", function () {
+        if ($(".zoom-tool").attr("show-data") === "1") {
             if (!$(this).attr("lay-id")) {
                 //当前
                 let superEle = $(this).parent();
@@ -739,13 +775,13 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
     if (!dimples.isPc() || ($(window).width() <= mobileWidth)) {
         dimples.showMenu(false);
     }
-    $(window).on('resize', function (e) {
+    $(window).on('resize', function () {
         if ($(window).width() <= mobileWidth) {
             dimples.showMenu(false);
         }
     });
     //移动端跳转链接先把导航关闭
-    $(window).on('hashchange', function (e) {
+    $(window).on('hashchange', function () {
         if ($(window).width() < mobileWidth) {
             dimples.showMenu(false);
         }
@@ -756,11 +792,14 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
     if ($(siteShadeDom).length <= 0) {
         $('.dimples-layout').append('<div class="site-mobile-shade"></div>');
     }
-    $(siteShadeDom).click(function () {
-        if ($(".zoom-tool").attr("show-data") == 1) {
+    $(siteShadeDom).on("click", function () {
+        if ($(".zoom-tool").attr("show-data") === "1") {
             dimples.showMenu(false);
         }
     });
 
+    /**
+     * 定义输出外部引用
+     */
     exports("dimples", dimples);
 });
