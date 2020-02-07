@@ -1,0 +1,28 @@
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+    width: 0.3rem;
+    height: 0.3rem;
+    background-image: linear-gradient(135deg, #1DE9B6 0%, rgba(8, 196, 219, 0.5) 72%, rgba(0, 182, 234, 0.3) 100%);
+}
+
+/* 定义滚动条轨道 内阴影+圆角 */
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(135deg, #1DE9B6 0%, #08c4db 72%, #057494 100%);
+    transition: all .2s;
+    border-radius: 0.25rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(95, 95, 95, 0.7);
+}
+
+/* 重置a标签 */
+a {
+    cursor: pointer;
+    color: #2db7f5;
+    transition: color 0.3s ease
+}
