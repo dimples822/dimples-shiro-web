@@ -332,7 +332,7 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
                     $.each(tabTitle, function () {
                         let tabLayId = $(this).attr("lay-id");
                         if (tabLayId !== "1") {
-                            dimples.tabDelete($(this).attr("lay-id"))
+                            dimples.tabDelete(tabLayId)
                         }
                     })
                 });
@@ -733,7 +733,6 @@ layui.define(["element", "jquery", "layer", "form"], function (exports) {
             }
         }
     });
-
     laySide.on("click", ".layui-nav-item dd>.site-demo-active", function () {
         if ($(".zoom-tool").attr("show-data") === "1") {
             if (!$(this).attr("lay-id")) {
